@@ -79,10 +79,13 @@
         const chatForm = document.getElementById('chatForm');
         const chatInput = document.getElementById('chatInput');
 
+        // Single clean authentication guard and initializer
         onAuthStateChanged(auth, async (user) => {
             if (!user) {
+                // If not logged in, force redirect to login page
                 window.location.href = 'login.html';
             } else {
+                // If logged in, load announcements and chat right away
                 await loadAnnouncements();
                 loadGeneralChat();
             }
@@ -166,19 +169,6 @@
                 console.error('Error signing out:', error);
             }
         });
-        // Check if user is logged in, then load the dashboard
-onAuthStateChanged(auth, async (user) => {
-    if (!user) {
-        // If not logged in, send them back to the login page
-        window.location.href = 'login.html';
-    } else {
-        // If logged in, load everything right away!
-        await loadAnnouncements();
-        await loadResources();
-        loadGeneralChat();
-    }
-});
-
     </script>
 </body>
 </html>
