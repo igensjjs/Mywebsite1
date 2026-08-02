@@ -281,3 +281,45 @@ footer {
     line-height: 1.6;
 }
 
+/* Vocal Sections Grid */
+.sections-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+    text-align: left;
+}
+
+.section-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+    border-top: 4px solid #f39c12;
+}
+
+.section-card h3 {
+    font-size: 1.4rem;
+    color: #1a1a1a;
+    margin-bottom: 0.5rem;
+}
+
+.section-desc {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 1.2rem;
+    line-height: 1.5;
+}
+
+.member-list {
+    list-style-type: none;
+    padding: 0;
+    border-top: 1px solid #eee;
+    padding-top: 1rem;
+}
+
+.member-list li {
+    font-size: 0.95rem;
+    color: #444;
+    padding: 0.3rem 0;
+}
