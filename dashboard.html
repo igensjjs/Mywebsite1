@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rehobot Choir - Member Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Header & Navigation -->
+    <header>
+        <div class="logo">Rehobot Choir | Member Portal</div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Public Site</a></li>
+                <li><a href="#" id="logoutBtn" style="color: #f39c12; font-weight: 600;">Sign Out</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Page Header Banner -->
+    <section class="page-header">
+        <h1>Welcome, Choir Member!</h1>
+        <p>Access your private practice schedules, leader announcements, and important updates below.</p>
+    </section>
+
+    <!-- Dashboard Content Section -->
+    <section class="container">
+        <div class="dashboard-grid">
+            
+            <!-- Announcements Card -->
+            <div class="dash-card">
+                <h3>📢 Leader Announcements</h3>
+                <ul class="dash-list">
+                    <li><strong>Special Rehearsal:</strong> This Thursday at 5:00 PM sharp in the main sanctuary.</li>
+                    <li><strong>New Song Release:</strong> Check out the lyrics for "Gaaddisa Waaqayyoo" in the resource section.</li>
+                    <li><strong>Uniform Update:</strong> Please bring your traditional choir attire for the upcoming Sunday service.</li>
+                </ul>
+            </div>
+
+            <!-- Practice Resources Card -->
+            <div class="dash-card">
+                <h3>🎵 Practice & Audio Files</h3>
+                <ul class="dash-list">
+                    <li><a href="#">Soprano Voice Practice Track (MP3)</a></li>
+                    <li><a href="#">Alto Voice Practice Track (MP3)</a></li>
+                    <li><a href="#">Tenor Voice Practice Track (MP3)</a></li>
+                    <li><a href="#">Bass Voice Practice Track (MP3)</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Rehobot Choir. All rights reserved.</p>
+    </footer>
+
+    <!-- Script to protect route and handle logout via Firebase -->
+    <script type="module">
+        import { auth } from './firebase-config.js';
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+        const logoutBtn = document.getElementById('logoutBtn');
+
+        // Check if user is logged in, otherwise redirect back to login page
+        onAuthStateChanged(auth, (user) => {
+            if (!user) {
+                // If not logged in, redirect to login page
+                window.location.href = 'login.html';
+            }
+        });
+
+        // Handle Logout
+        logoutBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+            try {
+                await signOut(auth);
+                window.location.href = 'index.html';
+            } catch (error) {
+                console.error('Error signing out:', error);
+            }
+        });
+    </script>
+</body>
+</html>
