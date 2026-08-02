@@ -437,3 +437,69 @@ footer {
     font-size: 1.05rem;
     font-weight: 600;
 }
+/* Events List */
+.events-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 2rem 0;
+    text-align: left;
+    max-width: 800px;
+    margin: auto;
+}
+
+.event-card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    border-left: 5px solid #f39c12;
+}
+
+.event-date {
+    background: #1a1a1a;
+    color: #fff;
+    padding: 1.5rem;
+    text-align: center;
+    min-width: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.event-date .month {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #f39c12;
+    letter-spacing: 1px;
+}
+
+.event-date .day {
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.event-details {
+    padding: 1.5rem;
+}
+
+.event-details h3 {
+    font-size: 1.25rem;
+    color: #1a1a1a;
+    margin-bottom: 0.2rem;
+}
+
+.event-time {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #f39c12;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.event-details p {
+    font-size: 0.95rem;
+    color: #666;
+}
