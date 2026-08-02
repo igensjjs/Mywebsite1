@@ -230,4 +230,54 @@ footer {
 .values-list li strong {
     color: #1a1a1a;
 }
+/* Leadership Grid */
+.leader-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2.5rem;
+    padding: 2rem 0;
+}
+
+.leader-card {
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    text-align: left;
+    transition: transform 0.3s ease;
+}
+
+.leader-card:hover {
+    transform: translateY(-5px);
+}
+
+.leader-img {
+    height: 250px;
+    background-size: cover;
+    background-position: center;
+}
+
+.leader-info {
+    padding: 1.5rem;
+}
+
+.leader-info h3 {
+    font-size: 1.25rem;
+    color: #1a1a1a;
+    margin-bottom: 0.2rem;
+}
+
+.leader-info .role {
+    display: block;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #f39c12;
+    margin-bottom: 0.8rem;
+}
+
+.leader-info p {
+    font-size: 0.95rem;
+    color: #666;
+    line-height: 1.6;
+}
 
