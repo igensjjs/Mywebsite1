@@ -323,3 +323,74 @@ footer {
     color: #444;
     padding: 0.3rem 0;
 }
+/* Songs Grid */
+.songs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+    text-align: left;
+}
+
+.song-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+    border-left: 4px solid #f39c12;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.song-card h3 {
+    font-size: 1.3rem;
+    color: #1a1a1a;
+    margin-bottom: 0.2rem;
+}
+
+.song-meta {
+    font-size: 0.85rem;
+    color: #f39c12;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 1rem;
+}
+
+.song-snippet {
+    font-size: 0.95rem;
+    color: #555;
+    font-style: italic;
+    margin-bottom: 1.5rem;
+}
+
+.song-actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.btn-sm {
+    background: #f39c12;
+    color: #fff;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: background 0.3s ease;
+}
+
+.btn-sm:hover {
+    background: #d68910;
+}
+
+.btn-sm.outline {
+    background: transparent;
+    border: 1px solid #f39c12;
+    color: #f39c12;
+}
+
+.btn-sm.outline:hover {
+    background: #f39c12;
+    color: #fff;
+}
