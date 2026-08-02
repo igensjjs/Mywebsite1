@@ -5,43 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rehobot Choir - Member Dashboard</title>
     <link rel="stylesheet" href="style.css">
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- Header & Navigation -->
     <header>
-        <div class="logo">Rehobot Choir | Member Portal</div>
+        <div class="logo">Rehobot Choir | Portal</div>
         <nav>
             <ul>
+                <li><a href="dashboard.html" style="color: #f39c12;">Dashboard</a></li>
+                <li><a href="messages.html">Private Messages</a></li>
+                <li><a href="profile.html">My Profile</a></li>
                 <li><a href="index.html">Public Site</a></li>
-                <li><a href="#" id="logoutBtn" style="color: #f39c12; font-weight: 600;">Sign Out</a></li>
+                <li><a href="#" id="logoutBtn" style="color: #e74c3c; font-weight: 600;">Sign Out</a></li>
             </ul>
         </nav>
     </header>
 
-    <!-- Page Header Banner -->
     <section class="page-header">
         <h1>Welcome, Choir Member!</h1>
-        <p>Access your private practice schedules, leader announcements, and important updates below.</p>
+        <p>Access your practice schedules, general discussions, and private chats below.</p>
     </section>
 
-    <!-- Dashboard Content Section -->
     <section class="container">
         <div class="dashboard-grid">
             
-            <!-- Announcements Card -->
             <div class="dash-card">
                 <h3>📢 Leader Announcements</h3>
-                <ul class="dash-list">
-                    <li><strong>Special Rehearsal:</strong> This Thursday at 5:00 PM sharp in the main sanctuary.</li>
-                    <li><strong>New Song Release:</strong> Check out the lyrics for "Gaaddisa Waaqayyoo" in the resource section.</li>
-                    <li><strong>Uniform Update:</strong> Please bring your traditional choir attire for the upcoming Sunday service.</li>
+                <ul class="dash-list" id="announcementsList">
+                    <li>Loading latest announcements...</li>
                 </ul>
             </div>
 
-            <!-- Practice Resources Card -->
             <div class="dash-card">
                 <h3>🎵 Practice & Audio Files</h3>
                 <ul class="dash-list">
@@ -52,30 +47,116 @@
                 </ul>
             </div>
 
+            <div class="dash-card" style="grid-column: 1 / -1;">
+                <h3>💬 General Choir Discussion Board</h3>
+                <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;">This chat is visible to all choir members for general open discussions.</p>
+                
+                <div id="chatBox" style="height: 250px; overflow-y: scroll; background: #f9f9f9; padding: 1rem; border-radius: 5px; margin-bottom: 1rem; border: 1px solid #ddd;">
+                    <p style="color: #777; font-size: 0.9rem;">Loading messages...</p>
+                </div>
+                
+                <form id="chatForm" style="display: flex; gap: 0.5rem;">
+                    <input type="text" id="chatInput" placeholder="Type a message to the general choir..." required style="flex: 1; padding: 0.8rem; border: 1px solid #ccc; border-radius: 4px;">
+                    <button type="submit" class="btn" style="padding: 0.8rem 1.5rem;">Send</button>
+                </form>
+            </div>
+
         </div>
     </section>
 
-    <!-- Footer -->
     <footer>
         <p>&copy; 2026 Rehobot Choir. All rights reserved.</p>
     </footer>
 
-    <!-- Script to protect route and handle logout via Firebase -->
     <script type="module">
-        import { auth } from './firebase-config.js';
+        import { auth, db } from './firebase-config.js';
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { collection, getDocs, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
         const logoutBtn = document.getElementById('logoutBtn');
+        const announcementsList = document.getElementById('announcementsList');
+        const chatBox = document.getElementById('chatBox');
+        const chatForm = document.getElementById('chatForm');
+        const chatInput = document.getElementById('chatInput');
 
-        // Check if user is logged in, otherwise redirect back to login page
-        onAuthStateChanged(auth, (user) => {
+        onAuthStateChanged(auth, async (user) => {
             if (!user) {
-                // If not logged in, redirect to login page
                 window.location.href = 'login.html';
+            } else {
+                await loadAnnouncements();
+                loadGeneralChat();
             }
         });
 
-        // Handle Logout
+        async function loadAnnouncements() {
+            try {
+                const q = query(collection(db, "announcements"), orderBy("createdAt", "desc"));
+                const querySnapshot = await getDocs(q);
+                
+                announcementsList.innerHTML = "";
+                if (querySnapshot.empty) {
+                    announcementsList.innerHTML = "<li>No announcements at this time.</li>";
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const li = document.createElement('li');
+                    li.innerHTML = `<strong>${data.title}:</strong> ${data.text}`;
+                    announcementsList.appendChild(li);
+                });
+            } catch (error) {
+                console.error("Error loading announcements:", error);
+                announcementsList.innerHTML = "<li>Failed to load announcements.</li>";
+            }
+        }
+
+        function loadGeneralChat() {
+            const q = query(collection(db, "community_chat"), orderBy("createdAt", "asc"));
+            
+            onSnapshot(q, (querySnapshot) => {
+                chatBox.innerHTML = "";
+
+                if (querySnapshot.empty) {
+                    chatBox.innerHTML = "<p style='color: #777; font-size: 0.9rem;'>No messages yet. Start the conversation!</p>";
+                    return;
+                }
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const p = document.createElement('p');
+                    p.style.marginBottom = "0.5rem";
+                    p.style.fontSize = "0.9rem";
+                    
+                    const senderName = data.email ? data.email.split('@')[0] : 'Member';
+                    p.innerHTML = `<strong>${senderName}:</strong> ${data.text}`;
+                    chatBox.appendChild(p);
+                });
+
+                chatBox.scrollTop = chatBox.scrollHeight;
+            });
+        }
+
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const messageText = chatInput.value.trim();
+            const currentUser = auth.currentUser;
+
+            if (!messageText || !currentUser) return;
+
+            try {
+                await addDoc(collection(db, "community_chat"), {
+                    text: messageText,
+                    email: currentUser.email,
+                    createdAt: new Date()
+                });
+                chatInput.value = "";
+            } catch (error) {
+                console.error("Error sending message:", error);
+                alert("Failed to send message.");
+            }
+        });
+
         logoutBtn.addEventListener('click', async (e) => {
             e.preventDefault();
             try {
