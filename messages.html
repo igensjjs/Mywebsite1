@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rehobot Choir - Private Messages</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <div class="logo">Rehobot Choir | Messages</div>
+        <nav>
+            <ul>
+                <li><a href="dashboard.html">Dashboard</a></li>
+                <li><a href="profile.html">My Profile</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="container" style="display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; margin-top: 2rem;">
+        <div class="dash-card">
+            <h3>Choir Directory</h3>
+            <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;">Click a member to message privately:</p>
+            <ul id="memberList" class="dash-list">
+                <li>Loading members...</li>
+            </ul>
+        </div>
+
+        <div class="dash-card">
+            <h3 id="chatTitle">Select a member to start chatting</h3>
+            <div id="privateChatBox" style="height: 250px; overflow-y: scroll; background: #f9f9f9; padding: 1rem; border-radius: 5px; margin-bottom: 1rem; border: 1px solid #ddd;">
+                <p style="color: #777;">No conversation selected.</p>
+            </div>
+            <form id="privateChatForm" style="display: none; gap: 0.5rem;">
+                <input type="text" id="privateInput" placeholder="Type a private message..." required style="flex: 1; padding: 0.6rem; border: 1px solid #ccc; border-radius: 4px;">
+                <button type="submit" class="btn" style="padding: 0.6rem 1rem;">Send</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 Rehobot Choir. All rights reserved.</p>
+    </footer>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { collection, getDocs, addDoc, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        let currentRecipientId = null;
+        let unsubscribeChat = null;
+        const memberList = document.getElementById('memberList');
+        const privateChatBox = document.getElementById('privateChatBox');
+        const privateChatForm = document.getElementById('privateChatForm');
+        const privateInput = document.getElementById('privateInput');
+        const chatTitle = document.getElementById('chatTitle');
+
+        onAuthStateChanged(auth, async (user) => {
+            if (!user) {
+                window.location.href = 'login.html';
+            } else {
+                await loadMembers(user.uid);
+            }
+        });
+
+        async function loadMembers(currentUserId) {
+            const querySnapshot = await getDocs(collection(db, "users"));
+            memberList.innerHTML = "";
+
+            querySnapshot.forEach((docSnap) => {
+                const member = docSnap.data();
+                if (docSnap.id !== currentUserId) {
+                    const li = document.createElement('li');
+                    li.style.cursor = "pointer";
+                    li.innerHTML = `<strong>${member.displayName || member.email}</strong> <span style="font-size:0.8rem; color:#886;">(${member.voicePart || 'Member'})</span>`;
+                    
+                    li.addEventListener('click', () => {
+                        selectedRecipient(docSnap.id, member.displayName || member.email);
+                    });
+                    memberList.appendChild(li);
+                }
+            });
+        }
+
+        function selectedRecipient(recipientId, recipientName) {
+            currentRecipientId = recipientId;
+            chatTitle.textContent = `Chat with ${recipientName}`;
+            privateChatForm.style.display = "flex";
+
+            const currentUser = auth.currentUser;
+            const chatId = currentUser.uid < recipientId ? `${currentUser.uid}_${recipientId}` : `${recipientId}_${currentUser.uid}`;
+
+            const q = query(collection(db, "private_chats", chatId, "messages"), orderBy("createdAt", "asc"));
+
+            if (unsubscribeChat) unsubscribeChat();
+
+            unsubscribeChat = onSnapshot(q, (snapshot) => {
+                privateChatBox.innerHTML = "";
+                if (snapshot.empty) {
+                    privateChatBox.innerHTML = "<p style='color: #777;'>No messages yet. Say hello!</p>";
+                    return;
+                }
+                snapshot.forEach((doc) => {
+                    const msg = doc.data();
+                    const p = document.createElement('p');
+                    p.style.marginBottom = "0.5rem";
+                    p.style.fontSize = "0.9rem";
+                    const sender = msg.senderId === currentUser.uid ? "You" : recipientName;
+                    p.innerHTML = `<strong>${sender}:</strong> ${msg.text}`;
+                    privateChatBox.appendChild(p);
+                });
+                privateChatBox.scrollTop = privateChatBox.scrollHeight;
+            });
+        }
+
+        privateChatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const text = privateInput.value.trim();
+            const currentUser = auth.currentUser;
+            if (!text || !currentRecipientId || !currentUser) return;
+
+            const chatId = currentUser.uid < currentRecipientId ? `${currentUser.uid}_${currentRecipientId}` : `${currentRecipientId}_${currentUser.uid}`;
+
+            try {
+                await addDoc(collection(db, "private_chats", chatId, "messages"), {
+                    text: text,
+                    senderId: currentUser.uid,
+                    createdAt: new Date()
+                });
+                privateInput.value = "";
+            } catch (error) {
+                console.error("Error sending private message:", error);
+            }
+        });
+    </script>
+</body>
+</html>
