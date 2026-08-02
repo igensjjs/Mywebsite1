@@ -595,3 +595,31 @@ footer {
         font-size: 0.85rem;
     }
 }
+/* Ensure the body and html take up full width and don't overflow horizontally */
+html, body {
+    width: 100%;
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* Fix containers to use percentage-based widths so they scale to any device screen */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    box-sizing: border-box;
+}
+
+/* Ensure the header spans the full width of the screen */
+header {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* Make sure image grids and content sections scale properly */
+.gallery-grid, .songs-grid, .events-list, .contact-grid {
+    width: 100%;
+    box-sizing: border-box;
+}
