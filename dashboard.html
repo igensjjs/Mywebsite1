@@ -166,6 +166,19 @@
                 console.error('Error signing out:', error);
             }
         });
+        // Check if user is logged in, then load the dashboard
+onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+        // If not logged in, send them back to the login page
+        window.location.href = 'login.html';
+    } else {
+        // If logged in, load everything right away!
+        await loadAnnouncements();
+        await loadResources();
+        loadGeneralChat();
+    }
+});
+
     </script>
 </body>
 </html>
