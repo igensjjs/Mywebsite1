@@ -147,3 +147,87 @@ footer {
     padding: 1.5rem 0;
     font-size: 0.9rem;
 }
+/* Page Header Banner */
+.page-header {
+    background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1465847899084-d164df4dedc6?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+    color: #fff;
+    text-align: center;
+    padding: 4rem 1rem;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.page-header p {
+    font-size: 1.1rem;
+    color: #ddd;
+}
+
+/* About Layout */
+.about-content {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+}
+
+.about-section h2 {
+    font-size: 1.8rem;
+    color: #1a1a1a;
+    margin-bottom: 1rem;
+    border-bottom: 2px solid #f39c12;
+    display: inline-block;
+    padding-bottom: 0.3rem;
+}
+
+.about-section p {
+    font-size: 1.05rem;
+    color: #555;
+    line-height: 1.8;
+}
+
+/* Mission & Vision Cards */
+.mission-vision-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+}
+
+.mv-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    border-left: 5px solid #f39c12;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.mv-card h3 {
+    color: #1a1a1a;
+    margin-bottom: 0.8rem;
+    font-size: 1.3rem;
+}
+
+.mv-card p {
+    color: #666;
+    font-size: 0.95rem;
+}
+
+/* Values List */
+.values-list {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-top: 0.5rem;
+}
+
+.values-list li {
+    font-size: 1.05rem;
+    color: #555;
+    margin-bottom: 0.5rem;
+}
+
+.values-list li strong {
+    color: #1a1a1a;
+}
+
