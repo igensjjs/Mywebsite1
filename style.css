@@ -576,3 +576,22 @@ footer {
     font-size: 1rem;
     text-align: center;
 }
+/* Mobile Responsive Navigation Fix */
+@media (max-width: 900px) {
+    header {
+        flex-direction: column;
+        padding: 1rem;
+        text-align: center;
+    }
+
+    header nav ul {
+        margin-top: 0.8rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 0.8rem 1.2rem;
+    }
+
+    header nav ul li a {
+        font-size: 0.85rem;
+    }
+}
